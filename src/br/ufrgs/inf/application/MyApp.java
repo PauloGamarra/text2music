@@ -8,7 +8,6 @@ public class MyApp {
     public static void main(String[] args) {
         
         new Text2Music().setVisible(true);
-        /*
         String pathzao = "C:\\Users\\Richard\\Desktop\\test.bin";
         MyFile file = new MyFile(pathzao);
         
@@ -26,7 +25,7 @@ public class MyApp {
             }
 
         } else {
-            System.out.println("Nao deu seu merda");
-        }*/
+            System.out.println("Nao deu");
+        }
     }
 }
