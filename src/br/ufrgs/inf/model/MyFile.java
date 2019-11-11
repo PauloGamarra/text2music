@@ -51,6 +51,7 @@ public class MyFile {
                     contentFile += (buffer + "\n");
                 }
 
+                fileReader.close();
             } catch (Exception e) {
                 System.out.println(e);
                 return false;

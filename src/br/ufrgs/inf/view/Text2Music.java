@@ -1,20 +1,78 @@
-/*
-
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package br.ufrgs.inf.view;
 
-import javax.swing.JSpinner;
-import javax.swing.SpinnerNumberModel;
+import br.ufrgs.inf.model.MyFile;
+import java.awt.Color;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import javax.swing.JOptionPane;
 
 public class Text2Music extends javax.swing.JFrame {
 
     public Text2Music() {
         initComponents();
-        restricSpinnerBPM();
-        restricSpinnerRhythm();
+        setLocationRelativeTo(null);
+        setResizable(false);
+        this.status = Text2Music.STATUS_CONVERT;
+        this.predefinedTimbre = new HashMap<String, Integer>();
+        definedTimbre();
+        insertComBoxTimbre();
+    }
+
+    private void definedTimbre() {
+
+        MyFile file = new MyFile("utilfiles//instruments.txt");
+
+        if (file.readFile()) {
+            String contentFile = file.getContent();
+
+            String contentFileInArray[];
+            contentFileInArray = contentFile.split("\n");
+
+            LinkedList<String> predefinedTimbreName;
+            predefinedTimbreName = new LinkedList<>(Arrays.asList(contentFileInArray));
+
+            for (String ptn : predefinedTimbreName) {
+                this.predefinedTimbre.put(convertInitialLetterUpperCase(ptn
+                        .substring(ptn.indexOf(" ")).replaceAll("_", " ").trim()),
+                        Integer.parseInt(ptn.substring(0, ptn.indexOf(" "))));
+            }
+
+        } else {
+            JOptionPane.showMessageDialog(this, "> instruments.txt file not found!");
+            System.exit(0);
+        }
+    }
+
+    private String convertInitialLetterUpperCase(String string) {
+
+        String newString = "";
+
+        for (String sNome : string.toLowerCase().split(" ")) {
+            if (!"".equals(sNome)) {
+                if (!"".equals(newString)) {
+                    newString += " ";
+                }
+
+                if (sNome.length() > 2) {
+                    newString += sNome.substring(0, 1).toUpperCase() + sNome.substring(1);
+                } else {
+                    newString += sNome;
+                }
+            }
+        }
+        return newString;
+    }
+
+    private void insertComBoxTimbre() {
+        for (Map.Entry<String, Integer> pt : this.predefinedTimbre.entrySet()) {
+            this.jComboBoxTimbre.addItem(pt.getKey());
+        }
+    }
+
+    private void setStatus(String status) {
+        jLabelStatus.setText("Status: " + status);
     }
 
     /**
@@ -27,32 +85,30 @@ public class Text2Music extends javax.swing.JFrame {
     private void initComponents() {
 
         jSpinnerBPM = new javax.swing.JSpinner();
-        jSpinnerRhythm = new javax.swing.JSpinner();
         jSliderVolume = new javax.swing.JSlider();
         jComboBoxTimbre = new javax.swing.JComboBox<String>();
         jLabelBPM = new javax.swing.JLabel();
-        jLabelRhythm = new javax.swing.JLabel();
         jLabelTimbre = new javax.swing.JLabel();
-        jScrollPaneTextArea = new javax.swing.JScrollPane();
+        jScrollPaneTextAreaMusicContent = new javax.swing.JScrollPane();
         jTextAreaMusicContent = new javax.swing.JTextArea();
-        jButtonConvertPlayStop = new javax.swing.JButton();
+        jButtonConvertPlay = new javax.swing.JButton();
         jLabelMusic = new javax.swing.JLabel();
         jLabelVolume = new javax.swing.JLabel();
         jSeparator = new javax.swing.JSeparator();
         jLabelStatus = new javax.swing.JLabel();
         jMenuBar = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        jMenuFile = new javax.swing.JMenu();
+        jMenuItemOpenFile = new javax.swing.JMenuItem();
+        jMenuExport = new javax.swing.JMenu();
+        jMenuItemExportExportFile = new javax.swing.JMenuItem();
+        jMenuItemExportExportMIDI = new javax.swing.JMenuItem();
+        jMenuHelp = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Text2Music");
 
         jSpinnerBPM.setFont(new java.awt.Font("Calibri", 0, 15)); // NOI18N
+        jSpinnerBPM.setModel(new javax.swing.SpinnerNumberModel(1, 1, 1000, 1));
         jSpinnerBPM.setToolTipText("");
         jSpinnerBPM.setName(""); // NOI18N
         jSpinnerBPM.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -69,10 +125,7 @@ public class Text2Music extends javax.swing.JFrame {
             }
         });
 
-        jSpinnerRhythm.setFont(new java.awt.Font("Calibri", 0, 15)); // NOI18N
-
         jComboBoxTimbre.setFont(new java.awt.Font("Calibri", 0, 15)); // NOI18N
-        jComboBoxTimbre.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBoxTimbre.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxTimbreActionPerformed(evt);
@@ -82,22 +135,29 @@ public class Text2Music extends javax.swing.JFrame {
         jLabelBPM.setFont(new java.awt.Font("Calibri", 0, 16)); // NOI18N
         jLabelBPM.setText("BPM:");
 
-        jLabelRhythm.setFont(new java.awt.Font("Calibri", 0, 16)); // NOI18N
-        jLabelRhythm.setText("Ritmo:");
-
         jLabelTimbre.setFont(new java.awt.Font("Calibri", 0, 16)); // NOI18N
         jLabelTimbre.setText("Timbre:");
 
-        jScrollPaneTextArea.setHorizontalScrollBar(null);
+        jScrollPaneTextAreaMusicContent.setHorizontalScrollBar(null);
 
         jTextAreaMusicContent.setColumns(20);
         jTextAreaMusicContent.setFont(new java.awt.Font("Calibri", 0, 14)); // NOI18N
         jTextAreaMusicContent.setLineWrap(true);
         jTextAreaMusicContent.setRows(5);
-        jScrollPaneTextArea.setViewportView(jTextAreaMusicContent);
+        jScrollPaneTextAreaMusicContent.setViewportView(jTextAreaMusicContent);
 
-        jButtonConvertPlayStop.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
-        jButtonConvertPlayStop.setText("Convert");
+        jButtonConvertPlay.setFont(new java.awt.Font("Calibri Light", 0, 14)); // NOI18N
+        jButtonConvertPlay.setText("Convert");
+        jButtonConvertPlay.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConvertPlayActionPerformed(evt);
+            }
+        });
+        jButtonConvertPlay.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jButtonConvertPlayKeyPressed(evt);
+            }
+        });
 
         jLabelMusic.setFont(new java.awt.Font("Calibri", 0, 16)); // NOI18N
         jLabelMusic.setText("Music:");
@@ -108,45 +168,42 @@ public class Text2Music extends javax.swing.JFrame {
         jLabelStatus.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jLabelStatus.setText("Status: ");
 
-        jMenu1.setText("File");
+        jMenuFile.setText("File");
 
-        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem1.setText("Open File");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemOpenFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemOpenFile.setText("Open File");
+        jMenuItemOpenFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                jMenuItemOpenFileActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        jMenuFile.add(jMenuItemOpenFile);
 
-        jMenu3.setText("Export");
+        jMenuExport.setText("Export");
 
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem2.setText("Export File");
-        jMenu3.add(jMenuItem2);
-
-        jMenuItem4.setText("Export MIDI");
-        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemExportExportFile.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemExportExportFile.setText("Export File");
+        jMenuItemExportExportFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem4ActionPerformed(evt);
+                jMenuItemExportExportFileActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem4);
+        jMenuExport.add(jMenuItemExportExportFile);
 
-        jMenuItem3.setText("Export MP3");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemExportExportMIDI.setText("Export MIDI");
+        jMenuItemExportExportMIDI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
+                jMenuItemExportExportMIDIActionPerformed(evt);
             }
         });
-        jMenu3.add(jMenuItem3);
+        jMenuExport.add(jMenuItemExportExportMIDI);
 
-        jMenu1.add(jMenu3);
+        jMenuFile.add(jMenuExport);
 
-        jMenuBar.add(jMenu1);
+        jMenuBar.add(jMenuFile);
 
-        jMenu2.setText("?");
-        jMenuBar.add(jMenu2);
+        jMenuHelp.setText("?");
+        jMenuBar.add(jMenuHelp);
 
         setJMenuBar(jMenuBar);
 
@@ -154,31 +211,30 @@ public class Text2Music extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPaneTextAreaMusicContent, javax.swing.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
                     .addComponent(jSeparator)
-                    .addComponent(jScrollPaneTextArea, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelRhythm, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabelBPM, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabelTimbre, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabelTimbre)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBoxTimbre, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(jLabelBPM)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jSpinnerBPM))
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jSpinnerBPM)
-                            .addComponent(jSpinnerRhythm)
-                            .addComponent(jComboBoxTimbre, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jButtonConvertPlayStop, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButtonConvertPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabelVolume)
                                     .addComponent(jSliderVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(jLabelMusic, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelStatus, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(jLabelStatus)
+                            .addComponent(jLabelMusic))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -191,44 +247,38 @@ public class Text2Music extends javax.swing.JFrame {
                     .addComponent(jLabelBPM))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jSpinnerRhythm, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelRhythm))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBoxTimbre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelTimbre))
-                .addGap(19, 19, 19)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
+                .addGap(1, 1, 1)
                 .addComponent(jLabelMusic)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPaneTextArea, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jButtonConvertPlayStop, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPaneTextAreaMusicContent, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(11, 11, 11)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabelVolume)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jSliderVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jSliderVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButtonConvertPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabelStatus)
-                .addGap(8, 8, 8))
+                .addGap(10, 10, 10))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void jMenuItemOpenFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenFileActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+        System.out.println("Open File!");
+    }//GEN-LAST:event_jMenuItemOpenFileActionPerformed
 
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+    private void jMenuItemExportExportMIDIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExportExportMIDIActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
-
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
+        System.out.println("Export MIDI!");
+    }//GEN-LAST:event_jMenuItemExportExportMIDIActionPerformed
 
     private void jComboBoxTimbreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTimbreActionPerformed
         // TODO add your handling code here:
@@ -236,7 +286,7 @@ public class Text2Music extends javax.swing.JFrame {
 
     private void jSpinnerBPMStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinnerBPMStateChanged
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_jSpinnerBPMStateChanged
 
     private void jSpinnerBPMKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jSpinnerBPMKeyPressed
@@ -246,6 +296,89 @@ public class Text2Music extends javax.swing.JFrame {
     private void jSpinnerBPMKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jSpinnerBPMKeyTyped
         // TODO add your handling code here:
     }//GEN-LAST:event_jSpinnerBPMKeyTyped
+
+    private void jButtonConvertPlayKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jButtonConvertPlayKeyPressed
+
+    }//GEN-LAST:event_jButtonConvertPlayKeyPressed
+
+    private void convertMusic() {
+        this.jButtonConvertPlay.setText("Loading...");
+
+        this.setStatus("Converting... Please, Wait!");
+        this.jLabelStatus.setForeground(Color.black);
+
+        //  - Souts só para testar:
+        System.out.println("--------------------------------------------");
+        System.out.println("> BPM: " + jSpinnerBPM.getValue().toString());
+        System.out.println("> Timbre: " + jComboBoxTimbre.getSelectedItem().toString());
+        System.out.println("> Music: " + jTextAreaMusicContent.getText());
+        System.out.println("> Volume: " + jSliderVolume.getValue());
+
+        // -> Aqui chama função de conversão
+        
+        this.jButtonConvertPlay.setText("Play");
+
+        this.setStatus("Converted with Success, Press Play!");
+        this.jLabelStatus.setForeground(Color.green);
+    }
+    
+    private void disableComponentesOfInput(boolean disable) {
+        jSpinnerBPM.setEnabled(disable);
+        jComboBoxTimbre.setEnabled(disable);
+        jTextAreaMusicContent.setEnabled(disable);
+        jButtonConvertPlay.setEnabled(disable);
+        jSliderVolume.setEnabled(disable);
+    }
+
+    private void playMusic() {
+        this.setStatus("Playing Music...");
+        this.jLabelStatus.setForeground(Color.black);
+        
+        disableComponentesOfInput(false);
+        
+        // -> Aqui função de tocar a musica
+        
+        this.jButtonConvertPlay.setText("Convert");
+        this.setStatus("Success!");
+        this.jLabelStatus.setForeground(Color.black);
+        
+        disableComponentesOfInput(true);
+    }
+
+    private void jButtonConvertPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConvertPlayActionPerformed
+
+        if (!this.jTextAreaMusicContent.getText().isEmpty()) {
+            switch (this.status) {
+                case Text2Music.STATUS_CONVERT:
+                    convertMusic();
+                    this.status = Text2Music.STATUS_PLAY;
+                    break;
+                case Text2Music.STATUS_PLAY:
+                    playMusic();
+                    this.status = Text2Music.STATUS_CONVERT;
+                    break;
+                // case Text2Music.STATUS_STOP:
+                // Text2Music text2Music;
+                // text2Music = new Text2Music();
+                // text2Music.setSpinnerBPMValue(this.jSpinnerBPM.getValue());
+                // text2Music.setSelectedItem(this.jComboBoxTimbre.getSelectedIndex());
+                // text2Music.setTextAreaMusicContent(this.jTextAreaMusicContent.getText());
+                // text2Music.setSliderVolumeValue(this.jSliderVolume.getValue());
+                // this.disable();
+                // text2Music.setVisible(true);
+                // text2Music.setStatus("Music Stoped!");
+                // break;
+            }
+        } else {
+            this.setStatus("Text Music is Empty!");
+            this.jLabelStatus.setForeground(Color.red);
+        }
+    }//GEN-LAST:event_jButtonConvertPlayActionPerformed
+
+    private void jMenuItemExportExportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExportExportFileActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Export File!");
+    }//GEN-LAST:event_jMenuItemExportExportFileActionPerformed
 
     /**
      * @param args the command line arguments
@@ -282,52 +415,32 @@ public class Text2Music extends javax.swing.JFrame {
             }
         });
     }
-    
-    private void restricSpinnerBPM(){
-        
-        SpinnerNumberModel spinnerNumberModelBPM = new SpinnerNumberModel();
-        
-        spinnerNumberModelBPM.setMaximum(MAXIMUM_J_SPINNER_BPM);
-        spinnerNumberModelBPM.setMinimum(0);
-        
-        this.jSpinnerBPM.setModel(spinnerNumberModelBPM);
-    }
-    private void restricSpinnerRhythm(){
-        
-        SpinnerNumberModel spinnerNumberModelRhythm;
-        spinnerNumberModelRhythm = new SpinnerNumberModel();
-        
-        spinnerNumberModelRhythm.setMaximum(MAXIMUM_J_SPINNER_RHYTHM);
-        spinnerNumberModelRhythm.setMinimum(0);
-        
-        this.jSpinnerRhythm.setModel(spinnerNumberModelRhythm);
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButtonConvertPlayStop;
+    private javax.swing.JButton jButtonConvertPlay;
     private javax.swing.JComboBox<String> jComboBoxTimbre;
     private javax.swing.JLabel jLabelBPM;
     private javax.swing.JLabel jLabelMusic;
-    private javax.swing.JLabel jLabelRhythm;
     private javax.swing.JLabel jLabelStatus;
     private javax.swing.JLabel jLabelTimbre;
     private javax.swing.JLabel jLabelVolume;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JScrollPane jScrollPaneTextArea;
+    private javax.swing.JMenu jMenuExport;
+    private javax.swing.JMenu jMenuFile;
+    private javax.swing.JMenu jMenuHelp;
+    private javax.swing.JMenuItem jMenuItemExportExportFile;
+    private javax.swing.JMenuItem jMenuItemExportExportMIDI;
+    private javax.swing.JMenuItem jMenuItemOpenFile;
+    private javax.swing.JScrollPane jScrollPaneTextAreaMusicContent;
     private javax.swing.JSeparator jSeparator;
     private javax.swing.JSlider jSliderVolume;
     private javax.swing.JSpinner jSpinnerBPM;
-    private javax.swing.JSpinner jSpinnerRhythm;
     private javax.swing.JTextArea jTextAreaMusicContent;
     // End of variables declaration//GEN-END:variables
 
-    private final int MAXIMUM_J_SPINNER_BPM = 200;
-    private final int MAXIMUM_J_SPINNER_RHYTHM = 200;
+    private int status;
+    private Map<String, Integer> predefinedTimbre;
+
+    private static final int STATUS_CONVERT = 0;
+    private static final int STATUS_PLAY = 1;
 }
