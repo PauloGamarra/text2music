@@ -1,5 +1,6 @@
 package br.ufrgs.inf.view;
 
+import br.ufrgs.inf.controller.Controller;
 import br.ufrgs.inf.model.MyFile;
 import java.awt.Color;
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class Text2Music extends javax.swing.JFrame {
 
         MyFile file = new MyFile("utilfiles//instruments.txt");
 
-        if (file.readFile()) {
+        if (file.openFile(file)) {
             String contentFile = file.getContent();
 
             String contentFileInArray[];
@@ -272,7 +273,7 @@ public class Text2Music extends javax.swing.JFrame {
 
     private void jMenuItemOpenFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenFileActionPerformed
         // TODO add your handling code here:
-        System.out.println("Open File!");
+        controller.openFile(this);
     }//GEN-LAST:event_jMenuItemOpenFileActionPerformed
 
     private void jMenuItemExportExportMIDIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExportExportMIDIActionPerformed
@@ -377,7 +378,7 @@ public class Text2Music extends javax.swing.JFrame {
 
     private void jMenuItemExportExportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExportExportFileActionPerformed
         // TODO add your handling code here:
-        System.out.println("Export File!");
+        controller.saveFile(this);
     }//GEN-LAST:event_jMenuItemExportExportFileActionPerformed
 
     /**
@@ -440,7 +441,20 @@ public class Text2Music extends javax.swing.JFrame {
 
     private int status;
     private Map<String, Integer> predefinedTimbre;
+    private Controller controller;
 
     private static final int STATUS_CONVERT = 0;
     private static final int STATUS_PLAY = 1;
+
+    public void setText(String content) {
+        jTextAreaMusicContent.setText(content);
+    }
+
+    public String getText() {
+        return jTextAreaMusicContent.getText();
+    }
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
 }
