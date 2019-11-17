@@ -10,6 +10,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
+import br.ufrgs.inf.model.Song;
 
 
 public class Converter {
@@ -41,26 +42,26 @@ public class Converter {
 
     
     // -  Methods:
-    public Pattern parse(String inputText, int initBPM, int initInstrument, int initVolume, int initOctave){
+    public Pattern parse(Song song){
         
-        int bpm = initBPM;
-        AtomicInteger volume = new AtomicInteger(initVolume);
-        AtomicInteger octave = new AtomicInteger(initOctave);
-        AtomicInteger instrument = new AtomicInteger(initInstrument);
+        AtomicInteger bpm = new AtomicInteger(song.getInitBPM());
+        AtomicInteger volume = new AtomicInteger(song.getInitVolume());
+        AtomicInteger octave = new AtomicInteger(song.getInitOctave());
+        AtomicInteger instrument = new AtomicInteger(song.getInitinstrument());
         
         String lastComponent = EMPTY_COMPONENT;
-        String songDescription = descriptionSetup(initBPM, initInstrument, initVolume);
+        String songDescription = descriptionSetup(song);
         String command = EMPTY_COMPONENT;
         
         
-        for(Character letter: inputText.toCharArray()){
+        for(Character letter: song.getText().toCharArray()){
             if (this.mapping.containsKey(letter)){
                 command = this.mapping.get(letter);
             }
             else{
                 command = this.mapping.get(null);
             }
-            lastComponent = this.toStaccato(command, letter, lastComponent, initVolume, volume, initOctave, octave, instrument);
+            lastComponent = this.toStaccato(command, letter, lastComponent, volume, octave, instrument, song);
             
             songDescription = songDescription + lastComponent + " ";
         }
@@ -70,7 +71,7 @@ public class Converter {
         return new Pattern(songDescription);
     }
     
-    private String toStaccato(String command, Character letter, String lastComponent,int initVolume, AtomicInteger volume, int initOctave, AtomicInteger octave, AtomicInteger instrument){
+    private String toStaccato(String command, Character letter, String lastComponent, AtomicInteger volume, AtomicInteger octave, AtomicInteger instrument, Song song){
         String songComponent = EMPTY_COMPONENT;
         
     switch(command){
@@ -78,10 +79,10 @@ public class Converter {
                 songComponent = lastOrSilence(lastComponent);
                 break;
             case "double volume":
-                songComponent = doubleVolume(volume, initVolume);
+                songComponent = doubleVolume(volume, song.getInitVolume());
                 break;
             case "increase octave":
-                songComponent = increaseOctave(octave, initOctave);
+                songComponent = increaseOctave(octave, song.getInitOctave());
                 break;
             case "change instrument":
                 songComponent = changeInstrument(instrument, letter);
@@ -136,8 +137,8 @@ public class Converter {
         return MessageFormat.format(":CE(7,{0})", volume.get());
     }
 
-    private String descriptionSetup(int initBPM, int initInstrument, int initVolume){
-        return(MessageFormat.format(" T{0,number,#}  I{1,number,#} :CE(7,{2,number,#}) ", initBPM, initInstrument, initVolume));
+    private String descriptionSetup(Song song){
+        return(MessageFormat.format(" T{0,number,#}  I{1,number,#} :CE(7,{2,number,#}) ", song.getInitBPM(), song.getInitinstrument(), song.getInitVolume()));
     }
     
     private String increaseOctave(AtomicInteger octave, int initOctave){
