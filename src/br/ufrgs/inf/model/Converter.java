@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package br.ufrgs.inf.model;
 
 import org.jfugue.pattern.Pattern;
@@ -11,110 +7,36 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.LinkedList;
+import javax.swing.JOptionPane;
 
 
-/**
- *
- * @author Paulo
- */
 public class Converter {
     
     // - Attributes:
-    public HashMap<Character, String> mapping = new HashMap<Character, String>();
+    private HashMap<Character, String> mapping = new HashMap<Character, String>();
     
     final int MAX_VOLUME = 127;
     final int MAX_OCTAVE = 9;
     final int MAX_INSTRUMENT = 127;
+    
+    final String SILENCE = "R";
+    final String EMPTY_COMPONENT = "";
+    
+    final String DEFAULT_MAPPING_PATH = "utilfiles//mapping.txt";
 
     // - Constructors:
     public Converter(){
-        this.mapping.put('A', "A{0}");
-        this.mapping.put('B', "B{0}");
-        this.mapping.put('C', "C{0}");
-        this.mapping.put('D', "D{0}");
-        this.mapping.put('E', "E{0}");
-        this.mapping.put('F', "F{0}");
-        this.mapping.put('G', "G{0}");
-
-        this.mapping.put('a', "anterior ou silencio");
-        this.mapping.put('b', "anterior ou silencio");
-        this.mapping.put('c', "anterior ou silencio");
-        this.mapping.put('d', "anterior ou silencio");
-        this.mapping.put('e', "anterior ou silencio");
-        this.mapping.put('f', "anterior ou silencio");
-        this.mapping.put('G', "anterior ou silencio");
-        this.mapping.put('g', "anterior ou silencio");
-        
-        this.mapping.put(' ', "dobra volume");
-
-        this.mapping.put('!', "I113");
-
-        this.mapping.put('I', "I6");
-        this.mapping.put('i', "I6");
-        this.mapping.put('O', "I6");
-        this.mapping.put('o', "I6");
-        this.mapping.put('U', "I6");
-        this.mapping.put('u', "I6");
-        
-        
-        this.mapping.put('H', "anterior ou silencio");
-        this.mapping.put('h', "anterior ou silencio");
-        this.mapping.put('J', "anterior ou silencio");
-        this.mapping.put('j', "anterior ou silencio");
-        this.mapping.put('K', "anterior ou silencio");
-        this.mapping.put('k', "anterior ou silencio");
-        this.mapping.put('L', "anterior ou silencio");
-        this.mapping.put('l', "anterior ou silencio");
-        this.mapping.put('M', "anterior ou silencio");
-        this.mapping.put('m', "anterior ou silencio");
-        this.mapping.put('N', "anterior ou silencio");
-        this.mapping.put('n', "anterior ou silencio");
-        this.mapping.put('P', "anterior ou silencio");
-        this.mapping.put('p', "anterior ou silencio");
-        this.mapping.put('Q', "anterior ou silencio");
-        this.mapping.put('q', "anterior ou silencio");
-        this.mapping.put('R', "anterior ou silencio");
-        this.mapping.put('r', "anterior ou silencio");
-        this.mapping.put('S', "anterior ou silencio");
-        this.mapping.put('s', "anterior ou silencio");
-        this.mapping.put('T', "anterior ou silencio");
-        this.mapping.put('t', "anterior ou silencio");
-        this.mapping.put('V', "anterior ou silencio");
-        this.mapping.put('v', "anterior ou silencio");
-        this.mapping.put('W', "anterior ou silencio");
-        this.mapping.put('w', "anterior ou silencio");
-        this.mapping.put('X', "anterior ou silencio");
-        this.mapping.put('x', "anterior ou silencio");
-        this.mapping.put('Y', "anterior ou silencio");
-        this.mapping.put('y', "anterior ou silencio");
-        this.mapping.put('Z', "anterior ou silencio");
-        this.mapping.put('z', "anterior ou silencio");
-        
-        this.mapping.put('0', "troca instrumento");
-        this.mapping.put('1', "troca instrumento");
-        this.mapping.put('2', "troca instrumento");
-        this.mapping.put('3', "troca instrumento");
-        this.mapping.put('4', "troca instrumento");
-        this.mapping.put('5', "troca instrumento");
-        this.mapping.put('6', "troca instrumento");
-        this.mapping.put('7', "troca instrumento");
-        this.mapping.put('8', "troca instrumento");
-        this.mapping.put('9', "troca instrumento");
-        
-        this.mapping.put('?', "aumenta oitava");
-        this.mapping.put('.', "aumenta oitava");
-        
-        this.mapping.put('\n', "I14");
-
-        this.mapping.put(';', "I75");
-        
-        this.mapping.put(',', "I19");
-
-        this.mapping.put(null, "anterior ou silencio");
+        this.loadMapping(DEFAULT_MAPPING_PATH);
     }
     
     public Converter(HashMap<Character, String> customMapping){
         this.mapping = customMapping;
+    }
+    
+    public Converter(String mappingPath){
+        this.loadMapping(mappingPath);
     }
 
     
@@ -126,9 +48,10 @@ public class Converter {
         AtomicInteger octave = new AtomicInteger(initOctave);
         AtomicInteger instrument = new AtomicInteger(initInstrument);
         
-        String lastComponent = "";
+        String lastComponent = EMPTY_COMPONENT;
         String songDescription = descriptionSetup(initBPM, initInstrument, initVolume);
-        String command = "";
+        String command = EMPTY_COMPONENT;
+        
         
         for(Character letter: inputText.toCharArray()){
             if (this.mapping.containsKey(letter)){
@@ -138,28 +61,29 @@ public class Converter {
                 command = this.mapping.get(null);
             }
             lastComponent = this.toStaccato(command, letter, lastComponent, initVolume, volume, initOctave, octave, instrument);
-            System.out.println(lastComponent);
+            
             songDescription = songDescription + lastComponent + " ";
         }
-        System.out.println(songDescription);
-
+        
+        System.out.println(songDescription);   
+        
         return new Pattern(songDescription);
     }
     
     private String toStaccato(String command, Character letter, String lastComponent,int initVolume, AtomicInteger volume, int initOctave, AtomicInteger octave, AtomicInteger instrument){
-        String songComponent = "";
+        String songComponent = EMPTY_COMPONENT;
         
-        switch(command){
-            case "anterior ou silencio":
+    switch(command){
+            case "last or silence":
                 songComponent = lastOrSilence(lastComponent);
                 break;
-            case "dobra volume":
+            case "double volume":
                 songComponent = doubleVolume(volume, initVolume);
                 break;
-            case "aumenta oitava":
+            case "increase octave":
                 songComponent = increaseOctave(octave, initOctave);
                 break;
-            case "troca instrumento":
+            case "change instrument":
                 songComponent = changeInstrument(instrument, letter);
                 break;
             default:
@@ -173,12 +97,12 @@ public class Converter {
                     return lastComponent;
                 }
                 else{
-                    return "R";
+                    return this.SILENCE;
                 }
     }
     
     private boolean isNote(String command){
-        if (command == ""){
+        if (command == EMPTY_COMPONENT){
             return false;
         }
         switch(command.charAt(0)){
@@ -240,5 +164,44 @@ public class Converter {
     
     private String formatNote(String note, AtomicInteger octave){
         return MessageFormat.format(note, octave);
+    }
+    
+    private boolean loadMapping(String mappingPath) {
+
+        MyFile file = new MyFile(mappingPath);
+
+        if (!(file.openFile(file))) {
+            
+            return false;
+            
+        }
+        
+        this.mapping = new HashMap<Character, String>();
+        
+        String contentFile = file.getContent();
+
+        String contentFileInArray[];
+        contentFileInArray = contentFile.split("\n");
+
+        LinkedList<String> predefinedMapping;
+        predefinedMapping = new LinkedList<>(Arrays.asList(contentFileInArray));
+        
+            
+        for (String conversion : predefinedMapping) {
+            
+            String letter = conversion.split("->")[0];
+            String command = conversion.split("->")[1];
+            
+            if (letter.equals("default")){
+                this.mapping.put(null, command.replace("\"", ""));
+            }
+            else{
+                this.mapping.put(letter.replace("\\n", "\n").charAt(1), command.replace("\"", ""));
+            }
+            
+            
+        }
+        
+        return true;
     }
 }
