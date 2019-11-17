@@ -42,14 +42,14 @@ public class MyFile {
         return content;
     }
 
-    public boolean openFile(Text2Music text2music) {
-        int returnValue = openFileChooser.showOpenDialog(text2music);
+    public boolean openFile(Text2Music userInterface) {
+        int returnValue = openFileChooser.showOpenDialog(userInterface);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {
             openedFile = openFileChooser.getSelectedFile();
             path = openedFile.getAbsolutePath();
             content = usingBufferedReader(path);
-            text2music.setText(content);
+            userInterface.setText(content);
             return true;
         } else {
             return false;
@@ -77,9 +77,9 @@ public class MyFile {
         return true;
     }
 
-    public boolean saveFile(Text2Music text2music) {
+    public boolean saveFile(Text2Music userInterface) {
         int returnValue = saveFileChooser.showSaveDialog(null);
-        content = text2music.getText();
+        content = userInterface.getText();
         System.out.println(content);
 
         if (returnValue == JFileChooser.APPROVE_OPTION) {

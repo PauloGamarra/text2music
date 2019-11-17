@@ -5,8 +5,12 @@
  */
 package br.ufrgs.inf.controller;
 
+import br.ufrgs.inf.model.Converter;
 import br.ufrgs.inf.model.MyFile;
+import br.ufrgs.inf.model.Song;
 import br.ufrgs.inf.view.Text2Music;
+import org.jfugue.pattern.Pattern;
+import org.jfugue.player.Player;
 
 /**
  *
@@ -14,20 +18,43 @@ import br.ufrgs.inf.view.Text2Music;
  */
 public class Controller{
     MyFile file;
+    Song song;
+    Converter converter;
+    Player player;
+    Pattern pattern;
+    Text2Music userInterface;
     
-    public Controller(MyFile file){
+    public Controller(Converter converter, MyFile file, Pattern pattern, Player player, Song song, Text2Music userInterface){
         this.file = file;
+        this.song = song;
+        this.converter = converter;
+        this.player = player;
+        this.pattern = pattern;
+        this.userInterface = userInterface;
     }
     
-    public void openFile(Text2Music text2music){
-        if(!file.openFile(text2music)){
+    public void openFile(){
+        if(!file.openFile(userInterface)){
             
         }      
     }
     
-    public void saveFile(Text2Music text2music){
-        if(!file.saveFile(text2music)){
+    public void saveFile(){
+        if(!file.saveFile(userInterface)){
             
         }
+    }
+
+    public void convertSong() {
+        song.setInitBPM(userInterface.getBPM());
+        song.setInitOctave(9);
+        song.setInitVolume(userInterface.getVolume());
+        song.setInitinstrument(userInterface.getInstrument());
+        song.setText(userInterface.getText());
+        pattern = converter.parse(song);
+    }
+
+    public void playSong() {
+        player.play(pattern);
     }
 }

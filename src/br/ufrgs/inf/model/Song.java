@@ -13,6 +13,10 @@ public class Song {
     private int initVolume;
     private int initOctave;
     
+    public Song(){
+        
+    }
+    
     public Song(String text, int initBPM, int initInstrument, int initVolume, int initOctave){
         this.text = text;
         this.initBPM = initBPM;

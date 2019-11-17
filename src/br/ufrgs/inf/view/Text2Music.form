@@ -50,7 +50,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuHelp">
           <Properties>
-            <Property name="text" type="java.lang.String" value="?"/>
+            <Property name="text" type="java.lang.String" value="Help"/>
           </Properties>
         </Menu>
       </SubComponents>
@@ -165,8 +165,8 @@
       </Properties>
       <Events>
         <EventHandler event="stateChanged" listener="javax.swing.event.ChangeListener" parameters="javax.swing.event.ChangeEvent" handler="jSpinnerBPMStateChanged"/>
-        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jSpinnerBPMKeyPressed"/>
         <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jSpinnerBPMKeyTyped"/>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="jSpinnerBPMKeyPressed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JSlider" name="jSliderVolume">

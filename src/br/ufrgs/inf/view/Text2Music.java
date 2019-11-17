@@ -87,7 +87,7 @@ public class Text2Music extends javax.swing.JFrame {
 
         jSpinnerBPM = new javax.swing.JSpinner();
         jSliderVolume = new javax.swing.JSlider();
-        jComboBoxTimbre = new javax.swing.JComboBox<String>();
+        jComboBoxTimbre = new javax.swing.JComboBox<>();
         jLabelBPM = new javax.swing.JLabel();
         jLabelTimbre = new javax.swing.JLabel();
         jScrollPaneTextAreaMusicContent = new javax.swing.JScrollPane();
@@ -118,11 +118,11 @@ public class Text2Music extends javax.swing.JFrame {
             }
         });
         jSpinnerBPM.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                jSpinnerBPMKeyPressed(evt);
-            }
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 jSpinnerBPMKeyTyped(evt);
+            }
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jSpinnerBPMKeyPressed(evt);
             }
         });
 
@@ -203,7 +203,7 @@ public class Text2Music extends javax.swing.JFrame {
 
         jMenuBar.add(jMenuFile);
 
-        jMenuHelp.setText("?");
+        jMenuHelp.setText("Help");
         jMenuBar.add(jMenuHelp);
 
         setJMenuBar(jMenuBar);
@@ -273,7 +273,7 @@ public class Text2Music extends javax.swing.JFrame {
 
     private void jMenuItemOpenFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenFileActionPerformed
         // TODO add your handling code here:
-        controller.openFile(this);
+        controller.openFile();
     }//GEN-LAST:event_jMenuItemOpenFileActionPerformed
 
     private void jMenuItemExportExportMIDIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExportExportMIDIActionPerformed
@@ -316,13 +316,14 @@ public class Text2Music extends javax.swing.JFrame {
         System.out.println("> Volume: " + jSliderVolume.getValue());
 
         // -> Aqui chama função de conversão
-        
+        controller.convertSong();
+
         this.jButtonConvertPlay.setText("Play");
 
         this.setStatus("Converted with Success, Press Play!");
         this.jLabelStatus.setForeground(Color.green);
     }
-    
+
     private void disableComponentesOfInput(boolean disable) {
         jSpinnerBPM.setEnabled(disable);
         jComboBoxTimbre.setEnabled(disable);
@@ -334,15 +335,16 @@ public class Text2Music extends javax.swing.JFrame {
     private void playMusic() {
         this.setStatus("Playing Music...");
         this.jLabelStatus.setForeground(Color.black);
-        
+
         disableComponentesOfInput(false);
-        
+
         // -> Aqui função de tocar a musica
-        
+        controller.playSong();
+
         this.jButtonConvertPlay.setText("Convert");
         this.setStatus("Success!");
         this.jLabelStatus.setForeground(Color.black);
-        
+
         disableComponentesOfInput(true);
     }
 
@@ -378,7 +380,7 @@ public class Text2Music extends javax.swing.JFrame {
 
     private void jMenuItemExportExportFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExportExportFileActionPerformed
         // TODO add your handling code here:
-        controller.saveFile(this);
+        controller.saveFile();
     }//GEN-LAST:event_jMenuItemExportExportFileActionPerformed
 
     /**
@@ -454,7 +456,21 @@ public class Text2Music extends javax.swing.JFrame {
         return jTextAreaMusicContent.getText();
     }
 
+    public int getBPM() {
+        return Integer.parseInt(jSpinnerBPM.getValue().toString());
+    }
+
+    public int getInstrument() {
+        System.out.println(jComboBoxTimbre.getSelectedItem().toString());
+        return 41;
+    }
+
+    public int getVolume() {
+        return jSliderVolume.getValue();
+    }
+
     public void setController(Controller controller) {
         this.controller = controller;
     }
+
 }
