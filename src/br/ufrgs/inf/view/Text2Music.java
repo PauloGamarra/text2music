@@ -19,6 +19,8 @@ public class Text2Music extends javax.swing.JFrame {
         this.predefinedTimbre = new HashMap<String, Integer>();
         definedTimbre();
         insertComBoxTimbre();
+        jSpinnerBPM.setValue(INITIAL_BPM);
+        
     }
 
     private void definedTimbre() {
@@ -72,7 +74,7 @@ public class Text2Music extends javax.swing.JFrame {
         }
     }
 
-    private void setStatus(String status) {
+    public void setStatus(String status) {
         jLabelStatus.setText("Status: " + status);
     }
 
@@ -383,6 +385,10 @@ public class Text2Music extends javax.swing.JFrame {
         controller.saveFile();
     }//GEN-LAST:event_jMenuItemExportExportFileActionPerformed
 
+    private void none(javax.swing.event.AncestorEvent evt) {//GEN-FIRST:event_none
+        // TODO add your handling code here:
+    }//GEN-LAST:event_none
+
     /**
      * @param args the command line arguments
      */
@@ -442,11 +448,12 @@ public class Text2Music extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private int status;
-    private Map<String, Integer> predefinedTimbre;
+    private final Map<String, Integer> predefinedTimbre;
     private Controller controller;
 
     private static final int STATUS_CONVERT = 0;
     private static final int STATUS_PLAY = 1;
+    private static final int INITIAL_BPM = 250;
 
     public void setText(String content) {
         jTextAreaMusicContent.setText(content);
@@ -462,7 +469,7 @@ public class Text2Music extends javax.swing.JFrame {
 
     public int getInstrument() {
         System.out.println(jComboBoxTimbre.getSelectedItem().toString());
-        return 41;
+        return 4;
     }
 
     public int getVolume() {

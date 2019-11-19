@@ -34,14 +34,14 @@ public class Controller{
     }
     
     public void openFile(){
-        if(!file.openFile(userInterface)){
-            
-        }      
+        file.openFile();
+        System.out.println(file.getContent());
+        userInterface.setText(file.getContent());
     }
     
     public void saveFile(){
-        if(!file.saveFile(userInterface)){
-            
+        if(!file.saveFile(userInterface.getText())){
+            userInterface.setStatus("Not able to save this file");
         }
     }
 
