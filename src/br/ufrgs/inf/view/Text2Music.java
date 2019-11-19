@@ -35,13 +35,17 @@ public class Text2Music extends javax.swing.JFrame {
 
             LinkedList<String> predefinedTimbreName;
             predefinedTimbreName = new LinkedList<>(Arrays.asList(contentFileInArray));
-
+            
+            // We have a problem in this for. It isn't ordering as it should have. -- Change variables names.
+            System.out.println(predefinedTimbreName);
+            System.out.println(this.predefinedTimbre);
             for (String ptn : predefinedTimbreName) {
                 this.predefinedTimbre.put(convertInitialLetterUpperCase(ptn
                         .substring(ptn.indexOf(" ")).replaceAll("_", " ").trim()),
                         Integer.parseInt(ptn.substring(0, ptn.indexOf(" "))));
             }
-
+            System.out.println(this.predefinedTimbre);
+            
         } else {
             JOptionPane.showMessageDialog(this, "> instruments.txt file not found!");
             System.exit(0);

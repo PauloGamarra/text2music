@@ -47,7 +47,7 @@ public class Controller{
 
     public void convertSong() {
         song.setInitBPM(userInterface.getBPM());
-        song.setInitOctave(9);
+        song.setInitOctave(3);
         song.setInitVolume(userInterface.getVolume());
         song.setInitinstrument(userInterface.getInstrument());
         song.setText(userInterface.getText());
