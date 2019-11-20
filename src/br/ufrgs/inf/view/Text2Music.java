@@ -3,10 +3,13 @@ package br.ufrgs.inf.view;
 import br.ufrgs.inf.controller.Controller;
 import br.ufrgs.inf.model.MyFile;
 import java.awt.Color;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 public class Text2Music extends javax.swing.JFrame {
@@ -283,8 +286,12 @@ public class Text2Music extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemOpenFileActionPerformed
 
     private void jMenuItemExportExportMIDIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExportExportMIDIActionPerformed
-        // TODO add your handling code here:
-        System.out.println("Export MIDI!");
+        try {
+            // TODO add your handling code here:
+            controller.saveMidi();
+        } catch (IOException ex) {
+            Logger.getLogger(Text2Music.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jMenuItemExportExportMIDIActionPerformed
 
     private void jComboBoxTimbreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxTimbreActionPerformed

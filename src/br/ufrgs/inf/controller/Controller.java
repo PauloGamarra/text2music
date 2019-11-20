@@ -9,6 +9,7 @@ import br.ufrgs.inf.model.Converter;
 import br.ufrgs.inf.model.MyFile;
 import br.ufrgs.inf.model.Song;
 import br.ufrgs.inf.view.Text2Music;
+import java.io.IOException;
 import org.jfugue.pattern.Pattern;
 import org.jfugue.player.Player;
 
@@ -43,6 +44,12 @@ public class Controller{
         if(!file.saveFile(userInterface.getText())){
             userInterface.setStatus("Not able to save this file");
         }
+    }
+    
+    public void saveMidi() throws IOException {
+        if (!file.saveMIDI(pattern)){
+            userInterface.setStatus("Not able to save this file");
+        } 
     }
 
     public void convertSong() {

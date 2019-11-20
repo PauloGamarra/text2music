@@ -8,6 +8,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.jfugue.midi.MidiFileManager;
+import static org.jfugue.midi.MidiFileManager.save;
+import org.jfugue.pattern.Pattern;
+import org.jfugue.pattern.PatternProducer;
 
 public class MyFile {
 
@@ -90,6 +94,13 @@ public class MyFile {
 
             }
         }
+        return true;
+    }
+    
+    public boolean saveMIDI(Pattern pattern) throws IOException{
+        int returnValue = saveFileDialog.showSaveDialog(null);
+        savedFile = saveFileDialog.getSelectedFile();
+        MidiFileManager.savePatternToMidi(pattern, savedFile);
         return true;
     }
 
