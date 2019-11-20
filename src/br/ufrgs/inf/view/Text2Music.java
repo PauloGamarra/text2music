@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import org.jfugue.midi.MidiDictionary;
 
 public class Text2Music extends javax.swing.JFrame {
 
@@ -456,7 +457,7 @@ public class Text2Music extends javax.swing.JFrame {
     private Controller controller;
 
     private static final int STATUS_CONVERT = 0;
-    private static final int INITIAL_OCTAVE = 3;
+    private static final int INITIAL_OCTAVE = 5;
     private static final int STATUS_PLAY = 1;
     private static final int INITIAL_BPM = 250;
 
@@ -473,8 +474,7 @@ public class Text2Music extends javax.swing.JFrame {
     }
 
     public int getInstrument() {
-        System.out.println(jComboBoxTimbre.getSelectedItem().toString());
-        return 4;
+        return MidiDictionary.INSTRUMENT_STRING_TO_BYTE.get(jComboBoxTimbre.getSelectedItem().toString().toUpperCase().replace(" ", "_"));
     }
 
     public int getVolume() {
