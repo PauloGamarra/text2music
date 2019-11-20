@@ -3,14 +3,10 @@ package br.ufrgs.inf.model;
 
 import org.jfugue.pattern.Pattern;
 import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.LinkedList;
-import javax.swing.JOptionPane;
-import br.ufrgs.inf.model.Song;
 
 
 public class Converter {

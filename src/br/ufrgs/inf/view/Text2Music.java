@@ -112,7 +112,6 @@ public class Text2Music extends javax.swing.JFrame {
         jMenuExport = new javax.swing.JMenu();
         jMenuItemExportExportFile = new javax.swing.JMenuItem();
         jMenuItemExportExportMIDI = new javax.swing.JMenuItem();
-        jMenuHelp = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Text2Music");
@@ -121,6 +120,15 @@ public class Text2Music extends javax.swing.JFrame {
         jSpinnerBPM.setModel(new javax.swing.SpinnerNumberModel(1, 1, 1000, 1));
         jSpinnerBPM.setToolTipText("");
         jSpinnerBPM.setName(""); // NOI18N
+        jSpinnerBPM.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
+            }
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+                none(evt);
+            }
+        });
         jSpinnerBPM.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSpinnerBPMStateChanged(evt);
@@ -211,9 +219,6 @@ public class Text2Music extends javax.swing.JFrame {
         jMenuFile.add(jMenuExport);
 
         jMenuBar.add(jMenuFile);
-
-        jMenuHelp.setText("Help");
-        jMenuBar.add(jMenuHelp);
 
         setJMenuBar(jMenuBar);
 
@@ -373,17 +378,6 @@ public class Text2Music extends javax.swing.JFrame {
                     playMusic();
                     this.status = Text2Music.STATUS_CONVERT;
                     break;
-                // case Text2Music.STATUS_STOP:
-                // Text2Music text2Music;
-                // text2Music = new Text2Music();
-                // text2Music.setSpinnerBPMValue(this.jSpinnerBPM.getValue());
-                // text2Music.setSelectedItem(this.jComboBoxTimbre.getSelectedIndex());
-                // text2Music.setTextAreaMusicContent(this.jTextAreaMusicContent.getText());
-                // text2Music.setSliderVolumeValue(this.jSliderVolume.getValue());
-                // this.disable();
-                // text2Music.setVisible(true);
-                // text2Music.setStatus("Music Stoped!");
-                // break;
             }
         } else {
             this.setStatus("Text Music is Empty!");
@@ -447,7 +441,6 @@ public class Text2Music extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuExport;
     private javax.swing.JMenu jMenuFile;
-    private javax.swing.JMenu jMenuHelp;
     private javax.swing.JMenuItem jMenuItemExportExportFile;
     private javax.swing.JMenuItem jMenuItemExportExportMIDI;
     private javax.swing.JMenuItem jMenuItemOpenFile;
@@ -463,6 +456,7 @@ public class Text2Music extends javax.swing.JFrame {
     private Controller controller;
 
     private static final int STATUS_CONVERT = 0;
+    private static final int INITIAL_OCTAVE = 3;
     private static final int STATUS_PLAY = 1;
     private static final int INITIAL_BPM = 250;
 
@@ -489,6 +483,10 @@ public class Text2Music extends javax.swing.JFrame {
 
     public void setController(Controller controller) {
         this.controller = controller;
+    }
+
+    public int getInitOctave() {
+        return INITIAL_OCTAVE;
     }
 
 }
