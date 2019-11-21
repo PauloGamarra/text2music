@@ -5,9 +5,14 @@ import br.ufrgs.inf.model.MyFile;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -77,8 +82,15 @@ public class Text2Music extends javax.swing.JFrame {
     }
 
     private void insertComBoxTimbre() {
+        List<String> instrumentsNamesOrdened = new LinkedList<>();
         for (Map.Entry<String, Integer> pt : this.predefinedTimbre.entrySet()) {
-            this.jComboBoxTimbre.addItem(pt.getKey());
+            instrumentsNamesOrdened.add(pt.getKey());
+        }
+        
+        Collections.sort(instrumentsNamesOrdened);
+        
+        for (String i : instrumentsNamesOrdened) {
+            this.jComboBoxTimbre.addItem(i);
         }
     }
 
@@ -97,7 +109,7 @@ public class Text2Music extends javax.swing.JFrame {
 
         jSpinnerBPM = new javax.swing.JSpinner();
         jSliderVolume = new javax.swing.JSlider();
-        jComboBoxTimbre = new javax.swing.JComboBox<>();
+        jComboBoxTimbre = new javax.swing.JComboBox<String>();
         jLabelBPM = new javax.swing.JLabel();
         jLabelTimbre = new javax.swing.JLabel();
         jScrollPaneTextAreaMusicContent = new javax.swing.JScrollPane();
@@ -118,16 +130,17 @@ public class Text2Music extends javax.swing.JFrame {
         setTitle("Text2Music");
 
         jSpinnerBPM.setFont(new java.awt.Font("Calibri", 0, 15)); // NOI18N
-        jSpinnerBPM.setModel(new javax.swing.SpinnerNumberModel(1, 1, 1000, 1));
+        jSpinnerBPM.setModel(new javax.swing.SpinnerNumberModel(1, 1, 1000, 10));
         jSpinnerBPM.setToolTipText("");
+        jSpinnerBPM.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinnerBPM, ""));
         jSpinnerBPM.setName(""); // NOI18N
         jSpinnerBPM.addAncestorListener(new javax.swing.event.AncestorListener() {
+            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
+                none(evt);
+            }
             public void ancestorAdded(javax.swing.event.AncestorEvent evt) {
             }
             public void ancestorRemoved(javax.swing.event.AncestorEvent evt) {
-            }
-            public void ancestorMoved(javax.swing.event.AncestorEvent evt) {
-                none(evt);
             }
         });
         jSpinnerBPM.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -136,13 +149,15 @@ public class Text2Music extends javax.swing.JFrame {
             }
         });
         jSpinnerBPM.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                jSpinnerBPMKeyTyped(evt);
-            }
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 jSpinnerBPMKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jSpinnerBPMKeyTyped(evt);
+            }
         });
+
+        jSliderVolume.setMaximum(127);
 
         jComboBoxTimbre.setFont(new java.awt.Font("Calibri", 0, 15)); // NOI18N
         jComboBoxTimbre.addActionListener(new java.awt.event.ActionListener() {
