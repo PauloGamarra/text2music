@@ -144,7 +144,7 @@ public class Converter {
     }
 
     private String decreaseOctave(AtomicInteger octave, int initOctave) {
-        if (octave.get()-1 <= this.MIN_OCTAVE) {
+        if (octave.get() - 1 <= this.MIN_OCTAVE) {
             octave.set(initOctave);
         } else {
             octave.set(octave.get() - 1);

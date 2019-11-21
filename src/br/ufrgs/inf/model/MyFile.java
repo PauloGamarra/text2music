@@ -94,8 +94,8 @@ public class MyFile {
         }
         return true;
     }
-    
-    public boolean saveMIDI(Pattern pattern) throws IOException{
+
+    public boolean saveMIDI(Pattern pattern) throws IOException {
         int returnValue = saveFileDialog.showSaveDialog(null);
         savedFile = saveFileDialog.getSelectedFile();
         MidiFileManager.savePatternToMidi(pattern, savedFile);

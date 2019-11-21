@@ -6,13 +6,10 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -29,7 +26,7 @@ public class Text2Music extends javax.swing.JFrame {
         definedTimbre();
         insertComBoxTimbre();
         jSpinnerBPM.setValue(INITIAL_BPM);
-        
+
     }
 
     private void definedTimbre() {
@@ -44,17 +41,13 @@ public class Text2Music extends javax.swing.JFrame {
 
             LinkedList<String> predefinedTimbreName;
             predefinedTimbreName = new LinkedList<>(Arrays.asList(contentFileInArray));
-            
-            // We have a problem in this for. It isn't ordering as it should have. -- Change variables names.
-            System.out.println(predefinedTimbreName);
-            System.out.println(this.predefinedTimbre);
+
             for (String ptn : predefinedTimbreName) {
                 this.predefinedTimbre.put(convertInitialLetterUpperCase(ptn
                         .substring(ptn.indexOf(" ")).replaceAll("_", " ").trim()),
                         Integer.parseInt(ptn.substring(0, ptn.indexOf(" "))));
             }
-            System.out.println(this.predefinedTimbre);
-            
+
         } else {
             JOptionPane.showMessageDialog(this, "> instruments.txt file not found!");
             System.exit(0);
@@ -86,9 +79,9 @@ public class Text2Music extends javax.swing.JFrame {
         for (Map.Entry<String, Integer> pt : this.predefinedTimbre.entrySet()) {
             instrumentsNamesOrdened.add(pt.getKey());
         }
-        
+
         Collections.sort(instrumentsNamesOrdened);
-        
+
         for (String i : instrumentsNamesOrdened) {
             this.jComboBoxTimbre.addItem(i);
         }
